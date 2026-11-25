@@ -1,0 +1,14 @@
+# Explicit ablation: same encoder/fusion/final injection; bypasses feature diffusion.
+seed: 42
+epochs: 50
+batch_size: 4
+num_workers: 0
+patience: 15
+native_lr: 0.00001
+branch_lr: 0.0001
+weight_decay: 0.0001
+diffusion_weight: 0.0
+augment: true
+model:
+  with_dit: false
+  timesteps: 50

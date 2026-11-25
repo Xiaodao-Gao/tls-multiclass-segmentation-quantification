@@ -1,0 +1,14 @@
+{
+  "shape": [224, 336],
+  "tissue_mask": null,
+  "metadata": {
+    "mpp_x": 0.25,
+    "mpp_y": 0.25,
+    "downsample_x": 4.0,
+    "downsample_y": 4.0
+  },
+  "tiles": [
+    {"probability_path": "../outputs/predictions/tile_000000.npz", "x": 0, "y": 0},
+    {"probability_path": "../outputs/predictions/tile_000001.npz", "x": 112, "y": 0}
+  ]
+}

@@ -1,0 +1,4 @@
+patient_id,split,image_path,mask_path,tile_id
+synthetic_patient_A,train,images/train_tile.png,masks/train_tile.png,train_tile
+synthetic_patient_B,val,images/val_tile.png,masks/val_tile.png,val_tile
+synthetic_patient_C,test,images/test_tile.png,masks/test_tile.png,test_tile
