@@ -202,7 +202,7 @@ class DiTDenoiseBlock(nn.Module):
     def __init__(self, hidden_size=128, num_heads=4, mlp_ratio=4.0):
         super().__init__()
         if hidden_size % num_heads != 0:
-            raise ValueError(f'hidden_size={hidden_size} 不能被 num_heads={num_heads} 整除。')
+            raise ValueError(f'hidden_size={hidden_size} must be divisible by num_heads={num_heads}.')
         self.norm1 = nn.LayerNorm(hidden_size, elementwise_affine=False, eps=1e-06)
         self.attention = nn.MultiheadAttention(embed_dim=hidden_size, num_heads=num_heads, batch_first=True)
         self.norm2 = nn.LayerNorm(hidden_size, elementwise_affine=False, eps=1e-06)
@@ -227,7 +227,7 @@ class DiTNoisePredictionHead(nn.Module):
     def __init__(self, channels=32, feature_size=56, patch_size=4, hidden_size=128, depth=2, num_heads=4, mlp_ratio=4.0):
         super().__init__()
         if feature_size % patch_size != 0:
-            raise ValueError(f'feature_size={feature_size} 不能被 patch_size={patch_size} 整除。')
+            raise ValueError(f'feature_size={feature_size} must be divisible by patch_size={patch_size}.')
         self.channels = channels
         self.feature_size = feature_size
         self.patch_size = patch_size

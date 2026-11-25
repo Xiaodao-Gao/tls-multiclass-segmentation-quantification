@@ -11,7 +11,7 @@ model.py                    2201a4c2a26e5d24628796e7b4adc7c7ab849eb20641ed603bfd
 frozen_base/train_segmentation.py  76a44388c4d44888dbb74a423e1b3356e3cf5e7201238e2392887a4738403c11
 ```
 
-`models/components.py` retains the supplied fusion-attention, GroupNorm, noise schedule and DiT component definitions; its source checksum is also embedded in that module. The source snapshot describes the branch as inherited from an earlier "009" implementation. A complete original upstream repository/license was not present. This repository preserves that provenance and does not assert that these pre-existing components are newly invented here.
+`models/components.py` retains the supplied fusion-attention, GroupNorm, noise schedule and DiT component mathematics; its original source checksum is also embedded in that module. Validation error messages have been translated to English without changing tensor operations or initialization. The source snapshot describes the branch as inherited from an earlier "009" implementation. A complete original upstream repository/license was not present. This repository preserves that provenance and does not assert that these pre-existing components are newly invented here.
 
 `models/segmenter.py` newly integrates four **encoder** tensors (32/48/136/384 channels) with the supplied fusion computation and the **single final decoder injection** (32→16 projection, upsample and learned channel gate). No supplied whole-model file had exactly this combination:
 

@@ -30,7 +30,7 @@ def main(argv=None):
     train.add_argument("--output", required=True)
     train.add_argument("--epochs", type=positive_int)
     train.add_argument("--resume", help="Resume a repository last.pt checkpoint")
-    train.add_argument("--native-checkpoint", help="Optional local plain SMP U-Net state_dict")
+    train.add_argument("--native-checkpoint", help="Local plain SMP U-Net state_dict; required by the patent recipe for a new run")
     train.add_argument("--max-train-batches", type=positive_int, help="Partial smoke run, marked in outputs")
     train.add_argument("--max-val-batches", type=positive_int, help="Partial smoke run, marked in outputs")
     evaluation = sub.add_parser("evaluate", help="Evaluate one frozen checkpoint without tuning")

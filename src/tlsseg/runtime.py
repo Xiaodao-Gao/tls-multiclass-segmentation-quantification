@@ -59,6 +59,13 @@ def environment():
         "cuda_runtime": torch.version.cuda, "git_commit": revision,
         "source_sha256": source_hashes(),
         "deterministic_algorithms": "requested with warn_only=True; CUDA interpolation/pooling backward may be nondeterministic",
+        "precision": {
+            "default_dtype": str(torch.get_default_dtype()),
+            "float32_matmul_precision": torch.get_float32_matmul_precision(),
+            "cuda_matmul_allow_tf32": torch.backends.cuda.matmul.allow_tf32,
+            "cudnn_allow_tf32": torch.backends.cudnn.allow_tf32,
+            "automatic_mixed_precision": "disabled in training/evaluation/prediction execution contexts",
+        },
     }
 
 
@@ -83,6 +90,14 @@ def seed_all(seed):
     # CUDA interpolation/pooling backward in the supplied architecture lacks
     # deterministic implementations. Warn rather than make CUDA training fail.
     torch.use_deterministic_algorithms(True, warn_only=True)
+
+
+def configure_precision():
+    """Use FP32 and disable both CUDA TF32 paths for the patent evaluation protocol."""
+    torch.set_default_dtype(torch.float32)
+    torch.set_float32_matmul_precision("highest")
+    torch.backends.cuda.matmul.allow_tf32 = False
+    torch.backends.cudnn.allow_tf32 = False
 
 
 def seed_worker(_):

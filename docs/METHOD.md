@@ -17,7 +17,7 @@ The class historically named `SynchronizedBatchNorm2d` in the supplied branch ac
 
 ## Training noise and one reconstruction
 
-The default schedule has **50 array indices, 0 through 49**. Define `beta[t] = linspace(0.0001,0.02,50)[t]`, `alpha[t]=1-beta[t]`, `alpha_bar[t]=product(alpha[0:t+1])`, `a[t]=sqrt(alpha_bar[t])` and `b[t]=sqrt(1-alpha_bar[t])`.
+The supplied source-component default schedule has **50 array indices, 0 through 49**. The patent does not provide a numeric total diffusion-step count; 50 is an implementation default, not a patent-mandated constant. For this default, define `beta[t] = linspace(0.0001,0.02,50)[t]`, `alpha[t]=1-beta[t]`, `alpha_bar[t]=product(alpha[0:t+1])`, `a[t]=sqrt(alpha_bar[t])` and `b[t]=sqrt(1-alpha_bar[t])`.
 
 For each sample in a minibatch:
 
@@ -28,7 +28,7 @@ For each sample in a minibatch:
 5. Reconstruct once: `D_hat = (D_t - b[t] epsilon_hat) / (a[t] + 1e-8)`.
 6. Project and inject `D_hat`, compute segmentation and noise objectives, and backpropagate jointly. Features are not detached from the encoder/fusion branch.
 
-The denoiser uses a 128-dimensional sinusoidal time embedding, two 32-channel convolutional layers with time conditioning, 4×4 patch embedding to 128 dimensions, 196 tokens, two DiT blocks with four heads and MLP ratio 4, and a transpose-convolution unpatch layer back to 32 channels. AdaLN modulation and the unpatch output layer have their supplied zero initializations.
+The denoiser uses a 128-dimensional sinusoidal time embedding, two 32-channel convolutional layers with time conditioning, 4×4 patch embedding to 128 dimensions, 196 tokens, two DiT blocks with four heads and MLP ratio 4, and a transpose-convolution unpatch layer back to 32 channels. The two-block output corresponds to the patent's second-block sequence U2. Patch size, embedding dimensions, head count, MLP ratio and AdaLN/unpatch zero initializations follow the supplied source-component settings rather than numeric restrictions stated in the patent.
 
 ## Deterministic inference
 
@@ -58,6 +58,8 @@ probabilities = softmax(logits, class_axis)
 
 The objective is mean valid-pixel cross entropy plus `1 - mean(soft_Dice[1:4])` plus `lambda_noise * noise_MSE`. Soft Dice pools over batch and space, uses smoothing `1e-6`, and includes all three foreground classes in the loss. Invalid pixels have mask 255. Entirely ignored minibatches are skipped. The default `lambda_noise` is 0.01.
 
+The patent recipe requires a local compatible native U-Net source checkpoint and uses AdamW with native-network LR 5e-6, added-branch LR 3e-4 and weight decay 1e-4. Its experimental source checkpoint was selected at epoch 45, but those actual weights are not distributed. Strict tensor loading and a recorded SHA256 establish file identity and compatibility, not the checkpoint's epoch or cohort provenance. The separate synthetic-smoke recipe explicitly starts from random weights for software checks. Training, evaluation and prediction use FP32 with autocast/AMP, matmul TF32 and cuDNN TF32 disabled. Neither initialization mode supplies evidence of real-cohort performance without the corresponding completed experiment.
+
 Evaluation accumulates a global 4×4 pixel confusion matrix with ground-truth rows and prediction columns. Per-class Dice is `2TP/(GT+Pred)`, IoU is `TP/(GT+Pred-TP)`, precision is `TP/Pred`, and recall is `TP/GT`. A zero denominator produces null; foreground macro means exclude background and the undefined entries for that particular metric. This global aggregation is not the same as averaging tile-level Dice. Losses are sample-weighted means of batch objectives and are labeled separately from global metrics.
 
 ## Coordinate fusion and area
@@ -65,3 +67,5 @@ Evaluation accumulates a global 4×4 pixel confusion matrix with ground-truth ro
 For each covered grid pixel and class, fuse probabilities using `sum(weight * probability)/sum(weight)` across tiles, then apply argmax. Default weights use a Hann window clipped away from zero at the boundary. Count every covered tissue pixel once. If no tissue mask is given, the caller has declared every grid pixel eligible; this choice must be described in the study's quantification protocol.
 
 Complete metadata defines physical pixel area as `mpp_x * downsample_x * mpp_y * downsample_y / 1e6` square millimeters. The downsample factors map one **output grid pixel** back to basic-level pixels and must include reading-level scale and every later resizing operation. Area fractions use covered valid tissue as denominator, not the sum of overlapping tile areas. Uncovered pixels and non-tissue are excluded. Connected-component counts are not reported as independent TLS structure counts.
+
+This code consumes prebuilt image/mask tiles, an existing patient-disjoint manifest and declared grid coordinates. WSI reading, GeoJSON annotation rasterization, tissue-mask preparation, physical calibration and creation of the patent's patient-level 70:20:10 train/validation/test split are external preparation tasks. The loader validates patient separation; it does not construct or enforce the split ratio. These interfaces implement part of the patent workflow and do not establish that its complete slide-preparation pipeline has been reproduced.

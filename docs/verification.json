@@ -1,12 +1,12 @@
 {
-  "release_version": "0.1.0",
+  "release_version": "0.1.1",
   "verification_date": "2026-11-25",
   "test_framework": "pytest",
-  "tests": 43,
+  "tests": 45,
   "failures": 0,
   "errors": 0,
   "skipped": 0,
-  "seconds": 27.222,
+  "seconds": 32.29,
   "device": "cpu",
   "environment": {
     "python": "3.12.14",
@@ -23,23 +23,30 @@
     },
     "cuda_runtime": null,
     "source_sha256": {
-      "__init__.py": "55fd11507dea91af33cace5e2721f79d7fc5b914e01dae6d5c21f73d728af516",
+      "__init__.py": "7354123dce0d180fb31cdbf32e15724af800f0ae350c1e9407f0c9893790cdb6",
       "__main__.py": "3129adff95e0f38b87ab34cddfc27082c7892bcaec267ff5d40f160fdf55b44a",
-      "cli.py": "b507d5097ca649a806ad61c7eb792d1a699e90ce132d1efed69e0f81ce689a0b",
+      "cli.py": "bc9dd8485e4e68d3c11f05842547f44425d6fa846d794cd4a22c3af87add178a",
       "data.py": "d110ed5d54bf1dda68b96c49b0b080948441d56c3bec58ca4971648e7b4e0cae",
-      "engine.py": "c4b75c895732a147cf24914bc36046d7d019b1dd90126e8830e6d203e2bc8164",
+      "engine.py": "b572aca5b567251fd9f20809976fb1b32c87b574198f7a41ac80dfbd93e3e81b",
       "losses.py": "9a4aa1f020bafc53b478f550a42e9f0d0de1955bc71552a404089fd78bb4c963",
       "metrics.py": "ea18f5b644e7e7f7d9ef262503d4995f16ded819b08e17506f12c66f648c0653",
       "models/__init__.py": "cf1b8935fbbcef0bb6a6a401b5724c09641ed8d357af3b71a8a0fed6096d065e",
-      "models/components.py": "95b3c6ae524591078877a3c8df93173c4de802fe264ee40590a2504505153fe3",
+      "models/components.py": "a61bd3122a0a5dc2e9186e2faa5b2a244ba55592f7ee432fb80c0a7dffc42123",
       "models/segmenter.py": "d2f3de7047cb842274c08f994869c4566a39c04545a46098ecf311a05ae97c74",
-      "predict.py": "447a233d06f48bc9514a2149cabdd4ea14f9574f1d9b813b26a69efa998e2e5b",
-      "runtime.py": "086d1172eb062ce6767f118a1793e5b08cb7bb3c36b87cb817698859dea9c09f",
+      "predict.py": "9521964b77a923dbefd21cbefb5c51e1e41d3669565cd0d9ca616fe58546ff72",
+      "runtime.py": "7ab8e93c1c7138c8ece5c343ec06403fff12cffda404eebe6925dafc3380706e",
       "stitching.py": "a184b89b145fdb78efd911f67c450a4f33698c49558c4b613f54d2f3e4bda452"
     },
-    "deterministic_algorithms": "requested with warn_only=True; CUDA interpolation/pooling backward may be nondeterministic"
+    "deterministic_algorithms": "requested with warn_only=True; CUDA interpolation/pooling backward may be nondeterministic",
+    "precision": {
+      "default_dtype": "torch.float32",
+      "float32_matmul_precision": "highest",
+      "cuda_matmul_allow_tf32": false,
+      "cudnn_allow_tf32": false,
+      "automatic_mixed_precision": "disabled in training/evaluation/prediction execution contexts"
+    }
   },
   "pip_check": "passed",
-  "cli_entrypoint": "tlsseg --version -> 0.1.0",
-  "scope": "Synthetic software checks only; no real cohort, trained model, CUDA or MPS validation."
+  "cli_entrypoint": "tlsseg --version -> 0.1.1",
+  "scope": "Synthetic software checks and final-patent method comparison only; no study epoch-45 checkpoint, real-cohort retraining, CUDA or MPS validation."
 }

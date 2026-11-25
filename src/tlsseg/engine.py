@@ -16,12 +16,13 @@ from .metrics import ConfusionMatrix
 from .models import PatentSegmenter
 from .runtime import (
     atomic_checkpoint, atomic_json, environment, load_checkpoint, restore_rng,
-    rng_state, seed_all, seed_worker, select_device, sha256, source_hashes,
+    rng_state, seed_all, seed_worker, select_device, sha256, source_hashes, configure_precision,
 )
 
 DEFAULT_CONFIG = {
+    "initialization": "native_checkpoint",
     "seed": 42, "epochs": 50, "batch_size": 4, "num_workers": 0,
-    "patience": 15, "native_lr": 1e-5, "branch_lr": 1e-4,
+    "patience": 15, "native_lr": 5e-6, "branch_lr": 3e-4,
     "weight_decay": 1e-4, "diffusion_weight": 0.01, "augment": True,
     "model": {"with_dit": True, "timesteps": 50},
 }
@@ -35,6 +36,8 @@ def read_config(path):
     if unknown:
         raise ValueError(f"Unknown configuration keys: {sorted(unknown)}")
     cfg = dict(DEFAULT_CONFIG, **raw)
+    if cfg["initialization"] not in ("native_checkpoint", "random"):
+        raise ValueError("initialization must be native_checkpoint or random.")
     if not isinstance(cfg["model"], dict) or set(cfg["model"]) - {"with_dit", "timesteps"}:
         raise ValueError("model accepts with_dit and timesteps only.")
     cfg["model"] = dict(DEFAULT_CONFIG["model"], **cfg["model"])
@@ -90,7 +93,7 @@ def run_epoch(model, loader, device, diffusion_weight, optimizer=None, max_batch
     sums = {"total": 0.0, "ce": 0.0, "dice": 0.0, "noise_mse": 0.0}
     count = batches = skipped = 0
     start = time.perf_counter()
-    with torch.set_grad_enabled(training):
+    with torch.set_grad_enabled(training), torch.autocast(device_type=device.type, enabled=False):
         for index, batch in enumerate(loader):
             if max_batches is not None and index >= max_batches:
                 break
@@ -148,6 +151,12 @@ def train(args):
         if args.epochs < 1:
             raise ValueError("epochs must be positive.")
         cfg["epochs"] = args.epochs
+    if not args.resume:
+        if cfg["initialization"] == "native_checkpoint" and not args.native_checkpoint:
+            raise ValueError("The patent recipe requires --native-checkpoint. Use configs/synthetic_smoke.yaml only for an explicit random-initialization software demonstration.")
+        if cfg["initialization"] == "random" and args.native_checkpoint:
+            raise ValueError("A random-initialization configuration cannot accept --native-checkpoint; use the patent configuration.")
+    configure_precision()
     seed_all(cfg["seed"])
     device = select_device(args.device)
     rows = load_manifest(args.manifest)
@@ -167,7 +176,7 @@ def train(args):
             raise ValueError("Resume last.pt in its original output directory, keeping best.pt alongside it.")
         model, prior = load_checkpoint(args.resume, device)
         for key in cfg:
-            if key != "epochs" and cfg[key] != prior["train_config"][key]:
+            if key != "epochs" and cfg[key] != prior["train_config"].get(key):
                 raise ValueError(f"Resume configuration changed: {key}.")
         if prior["manifest_sha256"] != manifest_hash:
             raise ValueError("Resume manifest SHA256 mismatch.")
@@ -203,6 +212,7 @@ def train(args):
         "config": cfg, "architecture": model.architecture_config(), "environment": env,
         "manifest_sha256": manifest_hash, "dataset_summary": summary,
         "native_initialization_sha256": native_hash,
+        "initialization": cfg["initialization"],
         "device": str(device), "partial_smoke_run": partial,
         "batch_limits": limits,
         "selection": "best validation global foreground macro Dice; test never read by train",
@@ -244,6 +254,7 @@ def train(args):
 
 
 def evaluate(args):
+    configure_precision()
     device = select_device(args.device)
     rows = load_manifest(args.manifest)
     summary = validate_patient_splits(rows)

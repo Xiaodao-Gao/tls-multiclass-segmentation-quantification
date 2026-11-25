@@ -10,11 +10,12 @@ from PIL import Image
 from torch.utils.data import DataLoader
 
 from .data import TileDataset, load_manifest, validate_patient_splits
-from .runtime import atomic_json, environment, load_checkpoint, select_device, sha256, source_hashes
+from .runtime import atomic_json, configure_precision, environment, load_checkpoint, select_device, sha256, source_hashes
 from .stitching import ProbabilityStitcher
 
 
 def predict(args):
+    configure_precision()
     device = select_device(args.device)
     rows = load_manifest(args.manifest)
     validate_patient_splits(rows)
@@ -33,7 +34,7 @@ def predict(args):
     loader = DataLoader(TileDataset(rows), batch_size=args.batch_size,
                         num_workers=args.num_workers, shuffle=False)
     index = []
-    with torch.inference_mode():
+    with torch.inference_mode(), torch.autocast(device_type=device.type, enabled=False):
         for batch in loader:
             probabilities = model(batch["image"].to(device))["logits"].softmax(1).cpu().numpy()
             for offset, probability in enumerate(probabilities):
