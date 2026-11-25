@@ -64,6 +64,11 @@ def _normalise_record(raw: Mapping[str, Any], index: int, base: Path) -> dict:
         row["mask_path"] = _path(mask, base, "mask_path")
     else:
         row.pop("mask_path", None)
+    for field in ("valid_mask_path", "tissue_mask_path"):
+        if row.get(field):
+            row[field] = _path(row[field], base, field)
+        else:
+            row.pop(field, None)
     tile = row.get("tile_id", row.get("sample_id"))
     row["tile_id"] = str(index if tile is None or not str(tile).strip() else tile).strip()
     return row
@@ -186,6 +191,13 @@ class TileDataset(Dataset):
                 raise ValueError("Image and mask geometry must both be 224x224.")
             if not np.isin(mask, (0, 1, 2, 3, IGNORE_INDEX)).all():
                 raise ValueError("Mask labels must be 0, 1, 2, 3 or 255 (ignore).")
+            if row.get("valid_mask_path"):
+                with Image.open(row["valid_mask_path"]) as source:
+                    valid = np.asarray(source)
+                if valid.ndim != 2 or valid.shape != mask.shape or not np.isin(valid, (0, 1, 255)).all():
+                    raise ValueError("Valid mask must be a tile-sized scalar binary image.")
+                mask = mask.copy()
+                mask[valid == 0] = IGNORE_INDEX
         if self.augment:
             turns = random.randrange(4)
             image = image.rotate(90 * turns, expand=False)

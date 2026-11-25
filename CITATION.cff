@@ -1,11 +1,11 @@
 cff-version: 1.2.0
 message: "This is the software citation. Add the accepted paper citation when available."
 type: software
-title: "Multi-scale fusion and single-step feature refinement for TLS segmentation"
+title: "TLS Multi-class Segmentation and Quantification"
 authors:
   - family-names: "Gao"
     given-names: "Wenjing"
-version: 0.1.1
-repository-code: "https://github.com/Xiaodao-Gao/tls-single-step-segmentation"
+version: 0.2.0
+repository-code: "https://github.com/Xiaodao-Gao/tls-multiclass-segmentation-quantification"
 date-released: 2026-11-25
 abstract: "Patent-aligned research implementation with synthetic software checks; no trained-model performance claim."

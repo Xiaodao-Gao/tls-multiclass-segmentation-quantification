@@ -24,7 +24,7 @@ def build(output):
             raise ValueError(f"Symlinks are not included in the submission archive: {path}")
     output = Path(output).resolve()
     output.parent.mkdir(parents=True, exist_ok=True)
-    prefix = "tls-single-step-segmentation/"
+    prefix = "tls-multiclass-segmentation-quantification/"
     checksums = []
     with zipfile.ZipFile(output, "w", compression=zipfile.ZIP_DEFLATED) as archive:
         for path in sorted(paths):

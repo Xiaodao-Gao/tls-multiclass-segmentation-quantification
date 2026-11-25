@@ -1,5 +1,12 @@
 # Changes
 
+## 0.2.0 — 2026-11-25
+
+- Name the project TLS Multi-class Segmentation and Quantification and make the four pixel classes explicit in prediction and quantification records.
+- Implement reviewed QuPath GeoJSON rasterization, polygon holes/conflict/ignore handling, slide-region reading and patient-level 70:20:10 split generation with seed 42.
+- Retain basic-level coordinates, reading level, actual resize factors and valid/tissue masks from preparation through prediction; automatically export and validate per-slide fusion layouts.
+- Preserve the single encoder-four-scale fusion, feature-reconstruction, final-gate and native-output-head model path and its mathematics.
+
 ## 0.1.1 — 2026-11-25
 
 - Audit the model against the accepted final patent text and Figure 3: encoder-only four-scale fusion, one feature reconstruction, final-decoder channel gate and the native output head remain the sole main segmentation path.

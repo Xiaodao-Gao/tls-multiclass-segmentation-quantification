@@ -1,0 +1,4 @@
+patient_id,slide_id,slide_path,annotation_path,tissue_mask_path,mpp_x,mpp_y
+example_A,slide_A,slides/slide_A.svs,annotations/slide_A.geojson,tissue/slide_A_output_grid.png,,
+example_B,slide_B,slides/slide_B.svs,annotations/slide_B.geojson,tissue/slide_B_output_grid.png,,
+example_C,slide_C,slides/slide_C.svs,annotations/slide_C.geojson,tissue/slide_C_output_grid.png,,

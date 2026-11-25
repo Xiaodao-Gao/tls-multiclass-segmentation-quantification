@@ -53,9 +53,16 @@ def environment():
         ).stdout.strip()
     except (subprocess.CalledProcessError, FileNotFoundError):
         revision = None
+    optional = {}
+    for name in ("shapely", "openslide-python", "openslide-bin"):
+        try:
+            optional[name] = importlib.metadata.version(name)
+        except importlib.metadata.PackageNotFoundError:
+            optional[name] = None
     return {
         "python": platform.python_version(), "platform": platform.platform(),
         "packages": {name: importlib.metadata.version(name) for name in packages},
+        "optional_preparation_packages": optional,
         "cuda_runtime": torch.version.cuda, "git_commit": revision,
         "source_sha256": source_hashes(),
         "deterministic_algorithms": "requested with warn_only=True; CUDA interpolation/pooling backward may be nondeterministic",

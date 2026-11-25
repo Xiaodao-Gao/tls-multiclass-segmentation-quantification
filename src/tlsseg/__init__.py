@@ -1,3 +1,3 @@
-"""Publication-oriented TLS segmentation implementation."""
+"""TLS multi-class segmentation and quantification."""
 
-__version__ = "0.1.1"
+__version__ = "0.2.0"

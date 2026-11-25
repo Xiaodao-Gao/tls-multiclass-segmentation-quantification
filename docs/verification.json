@@ -1,12 +1,12 @@
 {
-  "release_version": "0.1.1",
+  "release_version": "0.2.0",
   "verification_date": "2026-11-25",
   "test_framework": "pytest",
-  "tests": 45,
+  "tests": 111,
   "failures": 0,
   "errors": 0,
   "skipped": 0,
-  "seconds": 32.29,
+  "seconds": 34.223,
   "device": "cpu",
   "environment": {
     "python": "3.12.14",
@@ -21,20 +21,30 @@
       "Pillow": "11.3.0",
       "PyYAML": "6.0.3"
     },
+    "optional_preparation_packages": {
+      "shapely": "2.1.2",
+      "openslide-python": "1.4.7",
+      "openslide-bin": "4.0.1.2"
+    },
     "cuda_runtime": null,
     "source_sha256": {
-      "__init__.py": "7354123dce0d180fb31cdbf32e15724af800f0ae350c1e9407f0c9893790cdb6",
+      "__init__.py": "9e8a0ca1cb91581643bd327bfa1f66a174eedd4026bc09f9a7035ccefa970f99",
       "__main__.py": "3129adff95e0f38b87ab34cddfc27082c7892bcaec267ff5d40f160fdf55b44a",
-      "cli.py": "bc9dd8485e4e68d3c11f05842547f44425d6fa846d794cd4a22c3af87add178a",
-      "data.py": "d110ed5d54bf1dda68b96c49b0b080948441d56c3bec58ca4971648e7b4e0cae",
+      "annotations.py": "f5a2ebc4a0f7d36268e01abfc5a39744bdcc55890184388829372a0adecec577",
+      "cli.py": "656e2c5dff47c72c2a5832990d1ba5453e7559d640d1806e3fa84f17ae47f57a",
+      "coordinates.py": "ede81373f4c3e5bffe00c4e82c05db5549365906b0c4dc37bce891c3f1b9bd7c",
+      "data.py": "1677303967a457e2c95817ee632267b0341e4368ab575b34629118488fb42849",
       "engine.py": "b572aca5b567251fd9f20809976fb1b32c87b574198f7a41ac80dfbd93e3e81b",
       "losses.py": "9a4aa1f020bafc53b478f550a42e9f0d0de1955bc71552a404089fd78bb4c963",
       "metrics.py": "ea18f5b644e7e7f7d9ef262503d4995f16ded819b08e17506f12c66f648c0653",
       "models/__init__.py": "cf1b8935fbbcef0bb6a6a401b5724c09641ed8d357af3b71a8a0fed6096d065e",
       "models/components.py": "a61bd3122a0a5dc2e9186e2faa5b2a244ba55592f7ee432fb80c0a7dffc42123",
       "models/segmenter.py": "d2f3de7047cb842274c08f994869c4566a39c04545a46098ecf311a05ae97c74",
-      "predict.py": "9521964b77a923dbefd21cbefb5c51e1e41d3669565cd0d9ca616fe58546ff72",
-      "runtime.py": "7ab8e93c1c7138c8ece5c343ec06403fff12cffda404eebe6925dafc3380706e",
+      "predict.py": "d99d6825c7a85f757aa2e4af15e9c9e32dea1f708d7602bff8662b3a1b913077",
+      "preparation.py": "acbdc46e0b2cb462b52cbb1fd90f52f810139e293f1382c5b4bcc1364ccb1bc4",
+      "runtime.py": "435e7896509c0183a2c9a1b1fe76d713c688a5caddd81d8b96ad6ae86982440d",
+      "slides.py": "24800ddcc59e67394031a959d14233810639cbe69ccaad174b6394f1a0a960c7",
+      "splits.py": "29fdd7eaa3f64afc2d69ea7eac22998b2e5e5268c1fec5e528e279a023aa5066",
       "stitching.py": "a184b89b145fdb78efd911f67c450a4f33698c49558c4b613f54d2f3e4bda452"
     },
     "deterministic_algorithms": "requested with warn_only=True; CUDA interpolation/pooling backward may be nondeterministic",
@@ -47,6 +57,6 @@
     }
   },
   "pip_check": "passed",
-  "cli_entrypoint": "tlsseg --version -> 0.1.1",
-  "scope": "Synthetic software checks and final-patent method comparison only; no study epoch-45 checkpoint, real-cohort retraining, CUDA or MPS validation."
+  "cli_entrypoint": "tlsseg --version -> 0.2.0",
+  "scope": "Synthetic software and geometry tests; ordinary images and mocked WSI APIs, no real-cohort training, vendor-slide accuracy, CUDA or MPS validation."
 }

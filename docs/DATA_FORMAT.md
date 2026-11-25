@@ -1,5 +1,7 @@
 # Data and coordinate contract
 
+Use `tlsseg prepare` to create this tile manifest from annotated slides, or supply an existing compatible manifest. The [preparation guide](PREPARATION.md) specifies the cohort, reviewed class map, tissue mask, reading level and scale inputs.
+
 ## Tile manifest
 
 Supply a CSV (UTF-8) or JSON list of records with:
@@ -39,7 +41,7 @@ Optional `metadata` must provide all four positive finite values to calculate sq
 
 The numbers above are an example, not scanner defaults. The MPP values describe the basic slide level, while downsample factors map the final output grid to that level. If a tile read at downsample 4 is later resized to half its width/height, the effective output factors are 8 rather than 4. Different x/y factors are supported. Missing metadata yields unique pixel counts only; invalid or incomplete metadata must not be used to invent physical scale.
 
-`fused.npz` stores fused probabilities, prediction indices and coverage; pixels outside eligible covered tissue have prediction `-1`. `quantification.json` reports eligible/covered pixels and class areas/fractions. Review coverage before reporting slide-wide results. This repository does not extract tiles from WSI files or rasterize pathologist annotations. All inputs must already conform to the declared grid contract, and the entire stitching accumulator must fit in memory.
+`fused.npz` stores fused probabilities, prediction indices and coverage; pixels outside eligible covered tissue have prediction `-1`. `quantification.json` reports eligible/covered pixels and class areas/fractions. Review coverage before reporting slide-wide results. `prepare` can read slide regions and rasterize reviewed pathologist polygons. Its manifest preserves basic-level coordinates, grid positions, reading scale and valid/tissue masks; `predict` validates these values and exports per-slide layouts automatically. Fractional unaligned tile origins require explicit probability resampling and are rejected. The entire stitching accumulator must fit in memory.
 
 ## Data availability for a manuscript
 

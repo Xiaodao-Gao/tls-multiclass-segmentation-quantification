@@ -21,7 +21,7 @@ def nonnegative_int(value):
 
 
 def main(argv=None):
-    parser = argparse.ArgumentParser(prog="tlsseg")
+    parser = argparse.ArgumentParser(prog="tlsseg", description="TLS multi-class segmentation and quantification")
     parser.add_argument("--version", action="version", version=__version__)
     sub = parser.add_subparsers(dest="command", required=True)
     train = sub.add_parser("train", help="Train and select by validation only")
@@ -53,6 +53,18 @@ def main(argv=None):
     stitch = sub.add_parser("stitch", help="Fuse probabilities on a declared grid and quantify area")
     stitch.add_argument("--layout", required=True, help="Layout JSON with coordinates and scale metadata")
     stitch.add_argument("--output", required=True)
+    preparation = sub.add_parser("prepare", help="Prepare four-class tiles, patient splits and basic-level coordinate records")
+    preparation.add_argument("--cohort", required=True, help="CSV/JSON slide records")
+    preparation.add_argument("--class-map", help="JSON annotation-name to class-ID mapping; required in labeled mode")
+    preparation.add_argument("--mode", choices=("labeled", "predict"), default="labeled")
+    preparation.add_argument("--output", required=True)
+    preparation.add_argument("--level", type=nonnegative_int, default=0)
+    preparation.add_argument("--read-size", type=positive_int, default=224, help="Square read size at the selected level; output tiles are 224x224")
+    preparation.add_argument("--stride", type=positive_int, default=112, help="Stride in output-grid pixels")
+    preparation.add_argument("--seed", type=nonnegative_int, default=42)
+    preparation.add_argument("--backend", choices=("auto", "openslide", "pillow"), default="auto")
+    preparation.add_argument("--unannotated-label", type=int, choices=(0, 255), default=255)
+    preparation.add_argument("--allow-full-grid", action="store_true", help="Explicitly declare every output-grid pixel eligible when no tissue mask is supplied")
     args = parser.parse_args(argv)
     if hasattr(args, "threads"):
         torch.set_num_threads(args.threads)
@@ -62,6 +74,8 @@ def main(argv=None):
         from .engine import evaluate as run
     elif args.command == "predict":
         from .predict import predict as run
-    else:
+    elif args.command == "stitch":
         from .predict import stitch as run
+    else:
+        from .preparation import prepare as run
     run(args)

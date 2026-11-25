@@ -3,9 +3,9 @@ requires = ["setuptools>=68", "wheel"]
 build-backend = "setuptools.build_meta"
 
 [project]
-name = "tls-single-step-segmentation"
-version = "0.1.1"
-description = "Encoder multi-scale fusion and single-step feature refinement for four-class TLS segmentation"
+name = "tls-multiclass-segmentation-quantification"
+version = "0.2.0"
+description = "TLS multi-class segmentation and quantification with encoder fusion and single-step feature refinement"
 readme = "README.md"
 requires-python = ">=3.10,<3.13"
 dependencies = [
@@ -20,6 +20,8 @@ dependencies = [
 
 [project.optional-dependencies]
 dev = ["pytest==8.4.2"]
+preprocessing = ["shapely==2.1.2"]
+wsi = ["shapely==2.1.2", "openslide-python==1.4.7", "openslide-bin==4.0.1.2"]
 
 [project.scripts]
 tlsseg = "tlsseg.cli:main"
